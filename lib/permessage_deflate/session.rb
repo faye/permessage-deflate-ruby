@@ -12,49 +12,41 @@ class PermessageDeflate
     end
 
     def process_incoming_message(message)
-      compressed = message.frames.first.rsv1
-      return message unless compressed
+      return message unless message.rsv1
 
       inflate = get_inflate
 
       message.data = inflate.inflate(message.data) +
                      inflate.inflate([0x00, 0x00, 0xff, 0xff].pack('C*'))
 
-      inflate.close unless @inflate
+      free(inflate) unless @inflate
       message
     end
 
     def process_outgoing_message(message)
       deflate = get_deflate
-      payload = (deflate.deflate(message.data) + deflate.flush)[0...-4]
-      frame   = message.frames.first
 
-      deflate.close unless @deflate
+      message.data = deflate.deflate(message.data, Zlib::SYNC_FLUSH)[0...-4]
+      message.rsv1 = true
 
-      frame.final   = true
-      frame.rsv1    = true
-      frame.length  = payload.bytesize
-      frame.payload = payload
-
-      message.data   = payload
-      message.frames = [frame]
-
+      free(deflate) unless @deflate
       message
     end
 
     def close
-      @inflate.close if @inflate
+      free(@inflate)
       @inflate = nil
 
-      @deflate.close if @deflate
+      free(@deflate)
       @deflate = nil
     end
 
   private
 
-    def f(string)
-      bytes = string.bytes.map { |b| b.to_s(16).rjust(2, '0') }
-      "<#{string.encoding}: #{bytes * ' '}>"
+    def free(codec)
+      return if codec.nil?
+      codec.finish rescue nil
+      codec.close
     end
 
     def get_inflate

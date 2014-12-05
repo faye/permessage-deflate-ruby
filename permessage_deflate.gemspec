@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.name              = 'permessage-deflate'
+  s.name              = 'permessage_deflate'
   s.version           = '0.1.0'
   s.summary           = 'Per-message DEFLATE compression extension for WebSocket connections'
   s.author            = 'James Coglan'
