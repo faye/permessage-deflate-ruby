@@ -2,7 +2,13 @@ class PermessageDeflate
   class ServerSession < Session
 
     def self.valid_params?(params)
-      true # TODO
+      return false unless super
+
+      if params.has_key?('client_max_window_bits')
+        return false unless ([true] + VALID_WINDOW_BITS).include?(params['client_max_window_bits'])
+      end
+
+      true
     end
 
     def initialize(params)

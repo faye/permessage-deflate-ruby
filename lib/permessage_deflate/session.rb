@@ -1,7 +1,35 @@
 class PermessageDeflate
   class Session
 
+    VALID_PARAMS = [
+      'server_no_context_takeover',
+      'client_no_context_takeover',
+      'server_max_window_bits',
+      'client_max_window_bits'
+    ]
+
+    DEFAULT_MAX_WINDOW_BITS = 15
+    VALID_WINDOW_BITS = [8, 9, 10, 11, 12, 13, 14, 15]
     MESSAGE_OPCODES = [1, 2]
+
+    def self.valid_params?(params)
+      return false unless params.keys.all? { |k| VALID_PARAMS.include?(k) }
+      return false if params.values.grep(Array).any?
+
+      if params.has_key?('server_no_context_takeover')
+        return false unless params['server_no_context_takeover'] == true
+      end
+
+      if params.has_key?('client_no_context_takeover')
+        return false unless params['client_no_context_takeover'] == true
+      end
+
+      if params.has_key?('server_max_window_bits')
+        return false unless VALID_WINDOW_BITS.include?(params['server_max_window_bits'])
+      end
+
+      true
+    end
 
     def valid_frame_rsv(frame)
       if MESSAGE_OPCODES.include?(frame.opcode)
