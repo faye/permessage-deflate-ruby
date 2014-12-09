@@ -311,11 +311,11 @@ describe PermessageDeflate::ClientSession do
   end
 
   describe "with strategy" do
-    before { options[:strategy] = Zlib::RLE }
+    before { options[:strategy] = Zlib::FILTERED }
 
     it "sets the strategy of the deflate stream" do
       activate
-      expect(Zlib::Deflate).to receive(:new).with(level, -15, mem_level, Zlib::RLE).and_return(deflate)
+      expect(Zlib::Deflate).to receive(:new).with(level, -15, mem_level, Zlib::FILTERED).and_return(deflate)
       process_outgoing_message
     end
   end
