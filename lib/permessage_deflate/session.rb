@@ -31,6 +31,17 @@ class PermessageDeflate
       true
     end
 
+    def initialize(options)
+      @level     = options[:level]     || Zlib::DEFAULT_COMPRESSION
+      @mem_level = options[:mem_level] || Zlib::DEF_MEM_LEVEL
+      @strategy  = options[:strategy]  || Zlib::DEFAULT_STRATEGY
+
+      @accept_no_context_takeover  = options[:no_context_takeover]
+      @accept_max_window_bits      = options[:max_window_bits]
+      @request_no_context_takeover = options[:request_no_context_takeover]
+      @request_max_window_bits     = options[:request_max_window_bits]
+    end
+
     def valid_frame_rsv(frame)
       if MESSAGE_OPCODES.include?(frame.opcode)
         {:rsv1 => true, :rsv2 => false, :rsv3 => false}
@@ -86,7 +97,7 @@ class PermessageDeflate
 
     def get_deflate
       return @deflate if @deflate
-      deflate = Zlib::Deflate.new(Zlib::DEFAULT_COMPRESSION, -@own_window_bits)
+      deflate = Zlib::Deflate.new(@level, -@own_window_bits, @mem_level, @strategy)
       @deflate = deflate if @own_context_takeover
       deflate
     end

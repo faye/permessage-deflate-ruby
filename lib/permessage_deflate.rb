@@ -6,6 +6,8 @@ class PermessageDeflate
   require root + '/permessage_deflate/client_session'
   require root + '/permessage_deflate/server_session'
 
+  ConfigurationError = Class.new(ArgumentError)
+
   module Extension
     define_method(:name) { 'permessage-deflate' }
     define_method(:type) { 'permessage' }
@@ -13,16 +15,26 @@ class PermessageDeflate
     define_method(:rsv2) { false }
     define_method(:rsv3) { false }
 
+    def configure(options)
+      options = (@options || {}).merge(options)
+      PermessageDeflate.new(options)
+    end
+
     def create_client_session
-      ClientSession.new
+      ClientSession.new(@options || {})
     end
 
     def create_server_session(offers)
       offers.each do |offer|
-        return ServerSession.new(offer) if ServerSession.valid_params?(offer)
+        return ServerSession.new(@options || {}, offer) if ServerSession.valid_params?(offer)
       end
     end
   end
 
-  extend Extension
+  include Extension
+  extend  Extension
+
+  def initialize(options)
+    @options = options
+  end
 end

@@ -11,8 +11,8 @@ class PermessageDeflate
       true
     end
 
-    def initialize(params)
-      super()
+    def initialize(options, params)
+      super(options)
       @params = params
     end
 
