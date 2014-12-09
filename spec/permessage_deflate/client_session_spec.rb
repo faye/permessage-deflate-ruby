@@ -179,7 +179,7 @@ describe PermessageDeflate::ClientSession do
     describe "when the response has higher client_max_window_bits" do
       before { response["client_max_window_bits"] = 10 }
 
-      it "does not accept the response" do
+      it "rejects the response" do
         expect(activate).to be false
       end
     end
