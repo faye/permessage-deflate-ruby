@@ -28,6 +28,7 @@ class PermessageDeflate
       offers.each do |offer|
         return ServerSession.new(@options || {}, offer) if ServerSession.valid_params?(offer)
       end
+      nil
     end
   end
 
