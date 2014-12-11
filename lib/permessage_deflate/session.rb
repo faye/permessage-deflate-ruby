@@ -32,14 +32,14 @@ class PermessageDeflate
     end
 
     def initialize(options)
-      @level     = options[:level]     || Zlib::DEFAULT_COMPRESSION
-      @mem_level = options[:mem_level] || Zlib::DEF_MEM_LEVEL
-      @strategy  = options[:strategy]  || Zlib::DEFAULT_STRATEGY
+      @level     = options.fetch(:level,     Zlib::DEFAULT_COMPRESSION)
+      @mem_level = options.fetch(:mem_level, Zlib::DEF_MEM_LEVEL)
+      @strategy  = options.fetch(:strategy,  Zlib::DEFAULT_STRATEGY)
 
-      @accept_no_context_takeover  = options[:no_context_takeover]
-      @accept_max_window_bits      = options[:max_window_bits]
-      @request_no_context_takeover = options[:request_no_context_takeover]
-      @request_max_window_bits     = options[:request_max_window_bits]
+      @accept_no_context_takeover  = options.fetch(:no_context_takeover, false)
+      @accept_max_window_bits      = options.fetch(:max_window_bits, nil)
+      @request_no_context_takeover = options.fetch(:request_no_context_takeover, false)
+      @request_max_window_bits     = options.fetch(:request_max_window_bits, nil)
     end
 
     def valid_frame_rsv(frame)

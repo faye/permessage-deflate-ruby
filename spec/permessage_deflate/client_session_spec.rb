@@ -8,8 +8,8 @@ describe PermessageDeflate::ClientSession do
   let(:response)  { {} }
   let(:activate)  { session.activate(response) }
 
-  let(:deflate)   { double(:deflate, :deflate => "") }
-  let(:inflate)   { double(:inflate, :inflate => "") }
+  let(:deflate)   { double(:deflate, :deflate => [0x00, 0x00, 0xff, 0xff].pack("C*")) }
+  let(:inflate)   { double(:inflate, :inflate => [0x00, 0x00, 0xff, 0xff].pack("C*")) }
   let(:level)     { Zlib::DEFAULT_COMPRESSION }
   let(:mem_level) { Zlib::DEF_MEM_LEVEL }
   let(:strategy)  { Zlib::DEFAULT_STRATEGY }
@@ -133,7 +133,7 @@ describe PermessageDeflate::ClientSession do
   describe "with no_context_takeover" do
     before { options[:no_context_takeover] = true }
 
-    it "sends client_no_context_takeover with no_context_takeover" do
+    it "sends client_no_context_takeover" do
       expect(offer).to eq(
         "client_no_context_takeover" => true,
         "client_max_window_bits"     => true
@@ -159,7 +159,7 @@ describe PermessageDeflate::ClientSession do
   describe "with max_window_bits" do
     before { options[:max_window_bits] = 9 }
 
-    it "sends client_max_window_bits with max_window_bits" do
+    it "sends client_max_window_bits" do
       expect(offer).to eq("client_max_window_bits" => 9)
     end
 
@@ -203,7 +203,7 @@ describe PermessageDeflate::ClientSession do
   describe "with invalid max_window_bits" do
     before { options[:max_window_bits] = 20 }
 
-    it "raises when generating the offer with invalid max_window_bits" do
+    it "raises when generating the offer" do
       expect { offer }.to raise_error
     end
   end
@@ -211,7 +211,7 @@ describe PermessageDeflate::ClientSession do
   describe "with request_no_context_takeover" do
     before { options[:request_no_context_takeover] = true }
 
-    it "sends server_no_context_takeover with request_no_context_takeover" do
+    it "sends server_no_context_takeover" do
       expect(offer).to eq(
         "client_max_window_bits"     => true,
         "server_no_context_takeover" => true
@@ -231,7 +231,7 @@ describe PermessageDeflate::ClientSession do
         expect(activate).to be true
       end
 
-      it "uses no no context takeover and 15 window bits for inflating incoming messages" do
+      it "uses no context takeover and 15 window bits for inflating incoming messages" do
         activate
         expect(Zlib::Inflate).to receive(:new).with(-15).exactly(2).and_return(inflate)
         expect(inflate).to receive(:finish).exactly(2)
@@ -245,7 +245,7 @@ describe PermessageDeflate::ClientSession do
   describe "with request_max_window_bits" do
     before { options[:request_max_window_bits] = 12 }
 
-    it "sends server_max_window_bits with request_max_window_bits" do
+    it "sends server_max_window_bits" do
       expect(offer).to eq(
         "client_max_window_bits" => true,
         "server_max_window_bits" => 12
@@ -285,7 +285,7 @@ describe PermessageDeflate::ClientSession do
   describe "with invalid request_max_window_bits" do
     before { options[:request_max_window_bits] = 20 }
 
-    it "raises when generating an offer with invalid request_max_window_bits" do
+    it "raises when generating an offer" do
       expect { offer }.to raise_error
     end
   end

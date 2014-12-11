@@ -7,8 +7,8 @@ describe PermessageDeflate::ServerSession do
   let(:options)   { {} }
   let(:response)  { session.generate_response }
 
-  let(:deflate)   { double(:deflate, :deflate => "") }
-  let(:inflate)   { double(:inflate, :inflate => "") }
+  let(:deflate)   { double(:deflate, :deflate => [0x00, 0x00, 0xff, 0xff].pack("C*")) }
+  let(:inflate)   { double(:inflate, :inflate => [0x00, 0x00, 0xff, 0xff].pack("C*")) }
   let(:level)     { Zlib::DEFAULT_COMPRESSION }
   let(:mem_level) { Zlib::DEF_MEM_LEVEL }
   let(:strategy)  { Zlib::DEFAULT_STRATEGY }
@@ -85,7 +85,7 @@ describe PermessageDeflate::ServerSession do
         expect(response).to eq("server_max_window_bits" => 13)
       end
 
-      it "uses context takeover with 13 window bits to deflate outgoing messages" do
+      it "uses context takeover and 13 window bits for deflating outgoing messages" do
         response
         expect(Zlib::Deflate).to receive(:new).with(level, -13, mem_level, strategy).exactly(1).and_return(deflate)
         process_outgoing_message
@@ -108,7 +108,7 @@ describe PermessageDeflate::ServerSession do
         expect(response).to eq({})
       end
 
-      it "uses context takeover and 15 window bits to inflate incoming messages" do
+      it "uses context takeover and 15 window bits for inflating incoming messages" do
         response
         expect(Zlib::Inflate).to receive(:new).with(-15).exactly(1).and_return(inflate)
         process_incoming_message
@@ -123,7 +123,7 @@ describe PermessageDeflate::ServerSession do
         expect(response).to eq("client_max_window_bits" => 13)
       end
 
-      it "uses context takeover and 13 window bits to inflate incoming messages" do
+      it "uses context takeover and 13 window bits for inflating incoming messages" do
         response
         expect(Zlib::Inflate).to receive(:new).with(-13).exactly(1).and_return(inflate)
         process_incoming_message
