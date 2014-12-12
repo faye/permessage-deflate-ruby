@@ -10,7 +10,6 @@ class PermessageDeflate
 
     DEFAULT_MAX_WINDOW_BITS = 15
     VALID_WINDOW_BITS = [8, 9, 10, 11, 12, 13, 14, 15]
-    MESSAGE_OPCODES = [1, 2]
 
     def self.valid_params?(params)
       return false unless params.keys.all? { |k| VALID_PARAMS.include?(k) }
@@ -40,14 +39,6 @@ class PermessageDeflate
       @accept_max_window_bits      = options.fetch(:max_window_bits, nil)
       @request_no_context_takeover = options.fetch(:request_no_context_takeover, false)
       @request_max_window_bits     = options.fetch(:request_max_window_bits, nil)
-    end
-
-    def valid_frame_rsv(frame)
-      if MESSAGE_OPCODES.include?(frame.opcode)
-        {:rsv1 => true, :rsv2 => false, :rsv3 => false}
-      else
-        {:rsv1 => false, :rsv2 => false, :rsv3 => false}
-      end
     end
 
     def process_incoming_message(message)
