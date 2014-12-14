@@ -40,12 +40,12 @@ exts.add(deflate)
 
 The set of available options can be split into two sets: those that control the
 session's compressor for outgoing messages and do not need to be communicated to
-the peer, and those that are negoatiated as part of the protocol. The settings
+the peer, and those that are negotiated as part of the protocol. The settings
 only affecting the compressor are described fully in the [Zlib
 documentation](http://ruby-doc.org/stdlib-2.1.0/libdoc/zlib/rdoc/Zlib/Deflate.html#method-c-new):
 
 * `:level`: sets the compression level, can be an integer from `0` to `9`, or
-  one of the contants `Zlib::NO_COMPRESSION`, `Zlib::BEST_SPEED`,
+  one of the constants `Zlib::NO_COMPRESSION`, `Zlib::BEST_SPEED`,
   `Zlib::BEST_COMPRESSION`, or `Zlib::DEFAULT_COMPRESSION`
 * `:mem_level`: sets how much memory the compressor allocates, can be an integer
   from `1` to `9`, or one of the constants `Zlib::MAX_MEM_LEVEL`, or
