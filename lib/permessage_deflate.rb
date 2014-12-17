@@ -8,6 +8,24 @@ class PermessageDeflate
 
   ConfigurationError = Class.new(ArgumentError)
 
+  VALID_OPTIONS = [
+    :level,
+    :mem_level,
+    :strategy,
+    :no_context_takeover,
+    :max_window_bits,
+    :request_no_context_takeover,
+    :request_max_window_bits
+  ]
+
+  def self.validate_options(options, valid_keys)
+    options.keys.each do |key|
+      unless valid_keys.include?(key)
+        raise ConfigurationError, "Unrecognized option: #{key.inspect}"
+      end
+    end
+  end
+
   module Extension
     define_method(:name) { 'permessage-deflate' }
     define_method(:type) { 'permessage' }
@@ -16,6 +34,7 @@ class PermessageDeflate
     define_method(:rsv3) { false }
 
     def configure(options)
+      PermessageDeflate.validate_options(options, VALID_OPTIONS)
       options = (@options || {}).merge(options)
       PermessageDeflate.new(options)
     end
