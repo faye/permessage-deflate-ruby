@@ -163,8 +163,8 @@ describe PermessageDeflate::ServerSession do
     before { options[:max_window_bits] = 12 }
 
     describe "with an empty offer" do
-      it "includes server_max_window_bits in the response" do
-        expect(response).to eq("server_max_window_bits" => 12)
+      it "does not include server_max_window_bits in the response" do
+        expect(response).to eq({})
       end
 
       it "uses context takeover and 12 window bits for deflating outgoing messages" do

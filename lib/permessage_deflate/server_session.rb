@@ -52,6 +52,9 @@ class PermessageDeflate
       @peer_context_takeover = !params['client_no_context_takeover']
       @peer_window_bits = params['client_max_window_bits'] || DEFAULT_MAX_WINDOW_BITS
 
+      # Only include server_max_window_bits if requested, because FF will terminate the
+      # connection otherwise: https://bugzilla.mozilla.org/show_bug.cgi?id=1137008
+      params.delete('server_max_window_bits') unless @params['server_max_window_bits']
       params
     end
 
