@@ -59,12 +59,12 @@ class PermessageDeflate
 
       @own_context_takeover = !(@accept_no_context_takeover || params['client_no_context_takeover'])
       @own_window_bits = [
-        @accept_max_window_bits || DEFAULT_MAX_WINDOW_BITS,
-        params['client_max_window_bits'] || DEFAULT_MAX_WINDOW_BITS
+        @accept_max_window_bits || MAX_WINDOW_BITS,
+        params['client_max_window_bits'] || MAX_WINDOW_BITS
       ].min
 
       @peer_context_takeover = !params['server_no_context_takeover']
-      @peer_window_bits = params['server_max_window_bits'] || DEFAULT_MAX_WINDOW_BITS
+      @peer_window_bits = params['server_max_window_bits'] || MAX_WINDOW_BITS
 
       true
     end

@@ -17,45 +17,48 @@ class PermessageDeflate
     end
 
     def generate_response
-      params = {}
+      response = {}
 
       # https://tools.ietf.org/html/draft-ietf-hybi-permessage-compression#section-8.1.1.1
-      if @accept_no_context_takeover or @params['server_no_context_takeover']
-        params['server_no_context_takeover'] = true
-      end
+
+      @own_context_takeover = !@accept_no_context_takeover &&
+                              !@params['server_no_context_takeover']
+
+      response['server_no_context_takeover'] = true unless @own_context_takeover
 
       # https://tools.ietf.org/html/draft-ietf-hybi-permessage-compression#section-8.1.1.2
-      if @request_no_context_takeover or @params['client_no_context_takeover']
-        params['client_no_context_takeover'] = true
-      end
+
+      @peer_context_takeover = !@request_no_context_takeover &&
+                               !@params['client_no_context_takeover']
+
+      response['client_no_context_takeover'] = true unless @peer_context_takeover
 
       # https://tools.ietf.org/html/draft-ietf-hybi-permessage-compression#section-8.1.2.1
-      if @accept_max_window_bits or @params['server_max_window_bits']
-        accept_max = @accept_max_window_bits || DEFAULT_MAX_WINDOW_BITS
-        server_max = @params['server_max_window_bits'] || DEFAULT_MAX_WINDOW_BITS
-        params['server_max_window_bits'] = [accept_max, server_max].min
+
+      @own_window_bits = [ @accept_max_window_bits || MAX_WINDOW_BITS,
+                           @params['server_max_window_bits'] || MAX_WINDOW_BITS
+                         ].min
+
+      # In violation of the spec, Firefox closes the connection if it does not
+      # send server_max_window_bits but the server includes this in its response
+      if @own_window_bits < MAX_WINDOW_BITS and @params['server_max_window_bits']
+        response['server_max_window_bits'] = @own_window_bits
       end
 
       # https://tools.ietf.org/html/draft-ietf-hybi-permessage-compression#section-8.1.2.2
+
       if client_max = @params['client_max_window_bits']
-        if client_max == true
-          params['client_max_window_bits'] = @request_max_window_bits if @request_max_window_bits
-        else
-          request_max = @request_max_window_bits || DEFAULT_MAX_WINDOW_BITS
-          params['client_max_window_bits'] = [request_max, client_max].min
-        end
+        client_max = MAX_WINDOW_BITS if client_max == true
+        @peer_window_bits = [@request_max_window_bits || MAX_WINDOW_BITS, client_max].min
+      else
+        @peer_window_bits = MAX_WINDOW_BITS
       end
 
-      @own_context_takeover = !params['server_no_context_takeover']
-      @own_window_bits = params['server_max_window_bits'] || DEFAULT_MAX_WINDOW_BITS
+      if @peer_window_bits < MAX_WINDOW_BITS
+        response['client_max_window_bits'] = @peer_window_bits
+      end
 
-      @peer_context_takeover = !params['client_no_context_takeover']
-      @peer_window_bits = params['client_max_window_bits'] || DEFAULT_MAX_WINDOW_BITS
-
-      # Only include server_max_window_bits if requested, because FF will terminate the
-      # connection otherwise: https://bugzilla.mozilla.org/show_bug.cgi?id=1137008
-      params.delete('server_max_window_bits') unless @params['server_max_window_bits']
-      params
+      response
     end
 
   end
