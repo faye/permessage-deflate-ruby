@@ -39,6 +39,8 @@ class PermessageDeflate
       @accept_max_window_bits      = options.fetch(:max_window_bits, nil)
       @request_no_context_takeover = options.fetch(:request_no_context_takeover, false)
       @request_max_window_bits     = options.fetch(:request_max_window_bits, nil)
+
+      @deflate = @inflate = nil
     end
 
     def process_incoming_message(message)

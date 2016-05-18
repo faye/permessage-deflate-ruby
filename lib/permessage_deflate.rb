@@ -34,6 +34,8 @@ class PermessageDeflate
     define_method(:rsv3) { false }
 
     def configure(options)
+      @options ||= nil
+
       PermessageDeflate.validate_options(options, VALID_OPTIONS)
       options = (@options || {}).merge(options)
       PermessageDeflate.new(options)
