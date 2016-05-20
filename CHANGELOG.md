@@ -1,3 +1,7 @@
+### 0.1.3 / 2016-05-20
+
+* Amend all warnings issued when running with -W2
+
 ### 0.1.2 / 2015-11-06
 
 * The server does not send `server_max_window_bits` if the client does not ask
