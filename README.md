@@ -11,7 +11,7 @@ WebSocket protocol extension as a plugin for
 $ gem install permessage_deflate
 ```
 
-## Usage
+## Usage
 
 Add the plugin to your extensions:
 
