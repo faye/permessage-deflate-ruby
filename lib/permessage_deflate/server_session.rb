@@ -19,21 +19,21 @@ class PermessageDeflate
     def generate_response
       response = {}
 
-      # https://tools.ietf.org/html/draft-ietf-hybi-permessage-compression#section-8.1.1.1
+      # https://tools.ietf.org/html/rfc7692#section-7.1.1.1
 
       @own_context_takeover = !@accept_no_context_takeover &&
                               !@params['server_no_context_takeover']
 
       response['server_no_context_takeover'] = true unless @own_context_takeover
 
-      # https://tools.ietf.org/html/draft-ietf-hybi-permessage-compression#section-8.1.1.2
+      # https://tools.ietf.org/html/rfc7692#section-7.1.1.2
 
       @peer_context_takeover = !@request_no_context_takeover &&
                                !@params['client_no_context_takeover']
 
       response['client_no_context_takeover'] = true unless @peer_context_takeover
 
-      # https://tools.ietf.org/html/draft-ietf-hybi-permessage-compression#section-8.1.2.1
+      # https://tools.ietf.org/html/rfc7692#section-7.1.2.1
 
       @own_window_bits = [ @accept_max_window_bits || MAX_WINDOW_BITS,
                            @params['server_max_window_bits'] || MAX_WINDOW_BITS
@@ -45,7 +45,7 @@ class PermessageDeflate
         response['server_max_window_bits'] = @own_window_bits
       end
 
-      # https://tools.ietf.org/html/draft-ietf-hybi-permessage-compression#section-8.1.2.2
+      # https://tools.ietf.org/html/rfc7692#section-7.1.2.2
 
       if client_max = @params['client_max_window_bits']
         client_max = MAX_WINDOW_BITS if client_max == true
