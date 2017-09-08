@@ -8,6 +8,7 @@ class PermessageDeflate
       'client_max_window_bits'
     ]
 
+    MIN_WINDOW_BITS   = 9
     MAX_WINDOW_BITS   = 15
     VALID_WINDOW_BITS = [8, 9, 10, 11, 12, 13, 14, 15]
 
@@ -83,14 +84,20 @@ class PermessageDeflate
 
     def get_inflate
       return @inflate if @inflate
-      inflate = Zlib::Inflate.new(-@peer_window_bits)
+
+      window_bits = [@peer_window_bits, MIN_WINDOW_BITS].max
+      inflate     = Zlib::Inflate.new(-window_bits)
+
       @inflate = inflate if @peer_context_takeover
       inflate
     end
 
     def get_deflate
       return @deflate if @deflate
-      deflate = Zlib::Deflate.new(@level, -@own_window_bits, @mem_level, @strategy)
+
+      window_bits = [@own_window_bits, MIN_WINDOW_BITS].max
+      deflate     = Zlib::Deflate.new(@level, -window_bits, @mem_level, @strategy)
+
       @deflate = deflate if @own_context_takeover
       deflate
     end

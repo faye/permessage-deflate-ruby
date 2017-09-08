@@ -90,9 +90,9 @@ describe PermessageDeflate::ClientSession do
         expect(activate).to be true
       end
 
-      it "uses context takeover and 8 window bits for inflating incoming messages" do
+      it "uses context takeover and 9 window bits for inflating incoming messages" do
         activate
-        expect(Zlib::Inflate).to receive(:new).with(-8).exactly(1).and_return(inflate)
+        expect(Zlib::Inflate).to receive(:new).with(-9).exactly(1).and_return(inflate)
         process_incoming_message
         process_incoming_message
       end
@@ -113,9 +113,9 @@ describe PermessageDeflate::ClientSession do
         expect(activate).to be true
       end
 
-      it "uses context takeover and 8 window bits for deflating outgoing messages" do
+      it "uses context takeover and 9 window bits for deflating outgoing messages" do
         activate
-        expect(Zlib::Deflate).to receive(:new).with(level, -8, mem_level, strategy).exactly(1).and_return(deflate)
+        expect(Zlib::Deflate).to receive(:new).with(level, -9, mem_level, strategy).exactly(1).and_return(deflate)
         process_outgoing_message
         process_outgoing_message
       end
@@ -191,9 +191,9 @@ describe PermessageDeflate::ClientSession do
         expect(activate).to be true
       end
 
-      it "uses context takeover and 8 window bits for deflating outgoing messages" do
+      it "uses context takeover and 9 window bits for deflating outgoing messages" do
         activate
-        expect(Zlib::Deflate).to receive(:new).with(level, -8, mem_level, strategy).exactly(1).and_return(deflate)
+        expect(Zlib::Deflate).to receive(:new).with(level, -9, mem_level, strategy).exactly(1).and_return(deflate)
         process_outgoing_message
         process_outgoing_message
       end
