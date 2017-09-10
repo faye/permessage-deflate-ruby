@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name              = 'permessage_deflate'
-  s.version           = '0.1.3'
+  s.version           = '0.1.4'
   s.summary           = 'Per-message DEFLATE compression extension for WebSocket connections'
   s.author            = 'James Coglan'
   s.email             = 'jcoglan@gmail.com'
@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.rdoc_options      = %w[--main README.md --markup markdown]
   s.require_paths     = %w[lib]
 
-  s.files = %w[README.md CHANGELOG.md] + Dir.glob('lib/**/*.rb')
+  s.files = %w[CHANGELOG.md LICENSE.md README.md] + Dir.glob('lib/**/*.rb')
 
   s.add_development_dependency 'rspec'
 end

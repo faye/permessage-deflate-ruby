@@ -1,3 +1,8 @@
+### 0.1.4 / 2017-09-10
+
+* Use `9` instead of `8` as the `windowBits` parameter to zlib, to deal with
+  restrictions introduced in zlib v1.2.9
+
 ### 0.1.3 / 2016-05-20
 
 * Amend all warnings issued when running with -W2
