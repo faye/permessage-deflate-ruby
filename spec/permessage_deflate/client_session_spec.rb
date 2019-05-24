@@ -204,7 +204,7 @@ describe PermessageDeflate::ClientSession do
     before { options[:max_window_bits] = 20 }
 
     it "raises when generating the offer" do
-      expect { offer }.to raise_error
+      expect { offer }.to raise_error(PermessageDeflate::ConfigurationError)
     end
   end
 
@@ -286,7 +286,7 @@ describe PermessageDeflate::ClientSession do
     before { options[:request_max_window_bits] = 20 }
 
     it "raises when generating an offer" do
-      expect { offer }.to raise_error
+      expect { offer }.to raise_error(PermessageDeflate::ConfigurationError)
     end
   end
 
