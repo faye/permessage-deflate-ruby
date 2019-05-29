@@ -44,24 +44,24 @@ the peer, and those that are negotiated as part of the protocol. The settings
 only affecting the compressor are described fully in the [Zlib
 documentation](http://ruby-doc.org/stdlib-2.1.0/libdoc/zlib/rdoc/Zlib/Deflate.html#method-c-new):
 
-* `:level`: sets the compression level, can be an integer from `0` to `9`, or
+- `:level`: sets the compression level, can be an integer from `0` to `9`, or
   one of the constants `Zlib::NO_COMPRESSION`, `Zlib::BEST_SPEED`,
   `Zlib::BEST_COMPRESSION`, or `Zlib::DEFAULT_COMPRESSION`
-* `:mem_level`: sets how much memory the compressor allocates, can be an integer
+- `:mem_level`: sets how much memory the compressor allocates, can be an integer
   from `1` to `9`, or one of the constants `Zlib::MAX_MEM_LEVEL`, or
   `Zlib::DEF_MEM_LEVEL`
-* `:strategy`: can be one of the constants `Zlib::FILTERED`,
+- `:strategy`: can be one of the constants `Zlib::FILTERED`,
   `Zlib::HUFFMAN_ONLY`, `Zlib::RLE`, `Zlib::FIXED`, or `Zlib::DEFAULT_STRATEGY`
 
 The other options relate to settings that are negotiated via the protocol and
 can be used to set the local session's behaviour and control that of the peer:
 
-* `:no_context_takeover`: if `true`, stops the session reusing a deflate context
+- `:no_context_takeover`: if `true`, stops the session reusing a deflate context
   between messages
-* `:request_no_context_takeover`: if `true`, makes the session tell the other
+- `:request_no_context_takeover`: if `true`, makes the session tell the other
   peer not to reuse a deflate context between messages
-* `:max_window_bits`: an integer from `8` to `15` inclusive that sets the
+- `:max_window_bits`: an integer from `8` to `15` inclusive that sets the
   maximum size of the session's sliding window; a lower window size will be used
   if requested by the peer
-* `:request_max_window_bits`: an integer from `8` to `15` inclusive to ask the
+- `:request_max_window_bits`: an integer from `8` to `15` inclusive to ask the
   other peer to use to set its maximum sliding window size, if supported
