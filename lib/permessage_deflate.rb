@@ -21,7 +21,7 @@ class PermessageDeflate
   def self.validate_options(options, valid_keys)
     options.keys.each do |key|
       unless valid_keys.include?(key)
-        raise ConfigurationError, "Unrecognized option: #{key.inspect}"
+        raise ConfigurationError, "Unrecognized option: #{ key.inspect }"
       end
     end
   end
