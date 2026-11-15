@@ -1,6 +1,15 @@
 class PermessageDeflate
   class Session
 
+    class SessionError < StandardError
+      attr_reader :type
+
+      def initialize(message, type)
+        super(message)
+        @type = type
+      end
+    end
+
     VALID_PARAMS = [
       'server_no_context_takeover',
       'client_no_context_takeover',
@@ -8,9 +17,11 @@ class PermessageDeflate
       'client_max_window_bits'
     ]
 
-    MIN_WINDOW_BITS   = 9
-    MAX_WINDOW_BITS   = 15
-    VALID_WINDOW_BITS = [8, 9, 10, 11, 12, 13, 14, 15]
+    MIN_WINDOW_BITS    = 9
+    MAX_WINDOW_BITS    = 15
+    VALID_WINDOW_BITS  = [8, 9, 10, 11, 12, 13, 14, 15]
+    DEFAULT_MAX_LENGTH = 0x3ffffff # 64 MB
+    RAW_TAIL_BYTES     = [0x00, 0x00, 0xff, 0xff].pack('C*')
 
     def self.valid_params?(params)
       return false unless params.keys.all? { |k| VALID_PARAMS.include?(k) }
@@ -31,7 +42,7 @@ class PermessageDeflate
       true
     end
 
-    def initialize(options)
+    def initialize(options, session_opts)
       @level     = options.fetch(:level,     Zlib::DEFAULT_COMPRESSION)
       @mem_level = options.fetch(:mem_level, Zlib::DEF_MEM_LEVEL)
       @strategy  = options.fetch(:strategy,  Zlib::DEFAULT_STRATEGY)
@@ -41,6 +52,8 @@ class PermessageDeflate
       @request_no_context_takeover = options.fetch(:request_no_context_takeover, false)
       @request_max_window_bits     = options.fetch(:request_max_window_bits, nil)
 
+      @max_length = session_opts.fetch(:max_length, DEFAULT_MAX_LENGTH)
+
       @deflate = @inflate = nil
     end
 
@@ -48,9 +61,23 @@ class PermessageDeflate
       return message unless message.rsv1
 
       inflate = get_inflate
+      chunks  = []
+      length  = 0
 
-      message.data = inflate.inflate(message.data) +
-                     inflate.inflate([0x00, 0x00, 0xff, 0xff].pack('C*'))
+      handler = lambda do |chunk|
+        chunks << chunk
+        length += chunk.bytesize
+
+        if length > @max_length
+          free(inflate)
+          raise SessionError.new('WebSocket frame length too large after decompression', 1009)
+        end
+      end
+
+      inflate.inflate(message.data, &handler)
+      inflate.inflate(RAW_TAIL_BYTES, &handler)
+
+      message.data = chunks.join('')
 
       free(inflate) unless @inflate
       message

@@ -41,13 +41,13 @@ class PermessageDeflate
       PermessageDeflate.new(options)
     end
 
-    def create_client_session
-      ClientSession.new(@options || {})
+    def create_client_session(session_opts = {})
+      ClientSession.new(@options || {}, session_opts)
     end
 
-    def create_server_session(offers)
+    def create_server_session(offers, session_opts = {})
       offers.each do |offer|
-        return ServerSession.new(@options || {}, offer) if ServerSession.valid_params?(offer)
+        return ServerSession.new(@options || {}, session_opts, offer) if ServerSession.valid_params?(offer)
       end
       nil
     end
