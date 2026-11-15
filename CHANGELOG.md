@@ -1,3 +1,9 @@
+### 0.2.0 / 2026-11-16
+
+- Implement the `max_length` option from `websocket-extensions` to limit the
+  size of decompressed messages
+- Change license from MIT to Apache 2.0
+
 ### 0.1.4 / 2017-09-10
 
 - Use `9` instead of `8` as the `windowBits` parameter to zlib, to deal with
