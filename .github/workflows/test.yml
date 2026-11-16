@@ -24,7 +24,7 @@ jobs:
           - ruby-4.0
           - jruby-9.3
           - jruby-9.4
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
