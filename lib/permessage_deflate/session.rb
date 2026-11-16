@@ -64,7 +64,7 @@ class PermessageDeflate
       chunks  = []
       length  = 0
 
-      handler = lambda do |chunk|
+      inflate.inflate(message.data) do |chunk|
         chunks << chunk
         length += chunk.bytesize
 
@@ -74,9 +74,7 @@ class PermessageDeflate
         end
       end
 
-      inflate.inflate(message.data, &handler)
-      inflate.inflate(RAW_TAIL_BYTES, &handler)
-
+      chunks << inflate.inflate(RAW_TAIL_BYTES)
       message.data = chunks.join('')
 
       free(inflate) unless @inflate
